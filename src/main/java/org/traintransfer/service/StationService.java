@@ -1,6 +1,7 @@
 package org.traintransfer.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +15,11 @@ import org.traintransfer.common.Util;
 import org.traintransfer.dao.StationInfoDao;
 import org.traintransfer.dao.entity.StationNameInfoEntity;
 import org.traintransfer.dao.parameter.StationNameLikeParameter;
+import org.traintransfer.dao.parameter.stationHistoryParameter;
 import org.traintransfer.request.GetStationNameListRequest;
+import org.traintransfer.request.selectHistoryRequest;
+import org.traintransfer.request.selectStationHistoryRequest;
+import org.traintransfer.response.CommonResponse;
 import org.traintransfer.response.StationNameListResponse;
 import org.traintransfer.response.model.StationInfo;
 
@@ -84,5 +89,88 @@ public class StationService {
 		log.info("GetStationNameListResponse = " + json);
 
 		return json;
+	}
+
+	//登录最近查询API
+	public String regSelectHistory(String jsonRequest) {
+
+		String result = null;
+		Gson gson = new Gson();
+		log.info("regSelectHistoryRequest = " + jsonRequest);
+
+		CommonResponse response = new CommonResponse();
+
+		try {
+			selectHistoryRequest request = gson.fromJson(jsonRequest, selectHistoryRequest.class);
+			String openID = request.requestInfo.openid;
+			String stationGroupCode = request.requestInfo.stationGroupCode;
+
+			stationHistoryParameter parm = new stationHistoryParameter();
+			parm.setOpen_id(openID);
+			parm.setStation_g_cd(stationGroupCode);
+
+			result = staionInfoDao.selectSelectHistory(parm);
+
+			if (result == null) {
+				staionInfoDao.regSelectHistory(parm);
+			}else {
+				staionInfoDao.updateSelectHistory(parm);
+			}
+
+			response.responseCode = Constants.RESPONSE_CODE_OK;
+			response.errorInfo = null;
+
+		} catch(Exception e) {
+			response.responseCode = Constants.RESPONSE_CODE_NG;
+			response.errorInfo.message = e.getMessage();
+			e.printStackTrace();
+
+			log.error(e.getMessage(), e);
+		}
+
+		String json = gson.toJson(response);
+		log.info("regSelectHistoryResponse = " + json);
+
+		return json;
+
+	}
+
+	public String getSelectHistory(String jsonRequest) {
+
+
+		Gson gson = new Gson();
+		log.info("getSelectHistoryRequest = " + jsonRequest);
+
+		StationNameListResponse response = new StationNameListResponse();
+
+		try {
+			selectStationHistoryRequest request = gson.fromJson(jsonRequest, selectStationHistoryRequest.class);
+			String openID = request.requestInfo.openid;
+
+			List<String> stationHistory = staionInfoDao.selectHistory(openID);
+
+//			stationHistoryParameter parm = new stationHistoryParameter();
+//			parm.setOpen_id(openID);
+//			parm.setStation_g_cd(stationGroupCode);
+
+
+
+			response.responseCode = Constants.RESPONSE_CODE_OK;
+			response.errorInfo = null;
+
+		} catch(Exception e) {
+			response.responseCode = Constants.RESPONSE_CODE_NG;
+			response.errorInfo.message = e.getMessage();
+			e.printStackTrace();
+
+			log.error(e.getMessage(), e);
+		}
+
+
+		String json = gson.toJson(response);
+		log.info("etSelectHistoryResponse = " + json);
+
+		return json;
+
 	}
 }
