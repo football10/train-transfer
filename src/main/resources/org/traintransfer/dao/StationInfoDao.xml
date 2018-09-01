@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.traintransfer.dao.StationInfoDao">
+	<resultMap id="StationNameResult" type="org.traintransfer.dao.entity.StationNameInfoEntity">
+        <result column="station_g_cd" property="station_g_cd" />
+        <result column="station_name_cn" property="station_name_cn" />
+        <result column="station_name" property="station_name" />
+        <result column="station_name_r" property="station_name_r" />
+    </resultMap>
+
+	<select id="selectLineList" resultType="String" parameterType="String">
+		select line_cd
+		from station
+		where station_g_cd= #{stationGCd}
+		order by e_sort
+	</select>
+
+	<select id="selectStationNameList" resultMap="StationNameResult" parameterType="org.traintransfer.dao.parameter.StationNameLikeParameter">
+		select
+			station_g_cd,
+			station_name_cn,
+			station_name,
+			station_name_r
+		from (
+		select
+			station_g_cd,
+			station_name_cn,
+			station_name,
+			station_name_r,
+			e_sort as hit_sort
+		from station
+		where e_status = '0'
+		and pref_cd in (11, 12, 13, 14)
+		and station_name like #{stationNameLikeSQL_1}
+		<if test="stationNameLikeSQL_2 != null">
+		union
+		select
+			station_g_cd,
+			station_name_cn,
+			station_name,
+			station_name_r,
+			e_sort * 10 as hit_sort
+		from station
+		where e_status = '0'
+		and pref_cd in (11, 12, 13, 14)
+		and (station_name like #{stationNameLikeSQL_2}
+		or station_name like #{stationNameLikeSQL_3} )
+		</if>
+		) as temp
+		order by hit_sort
+		limit 10
+
+	</select>
+
+</mapper>

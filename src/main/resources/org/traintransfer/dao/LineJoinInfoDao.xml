@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.traintransfer.dao.LineJoinInfoDao">
+	<resultMap id="LineJoinResult" type="org.traintransfer.dao.entity.LineJoinInfoEntity">
+        <result column="line_cd_1" property="line_cd_1" />
+        <result column="line_name_1" property="line_name_1" />
+        <result column="line_cd_2" property="line_cd_2" />
+        <result column="line_name_2" property="line_name_2" />
+        <result column="station_g_cd" property="station_g_cd" />
+        <result column="station_name" property="station_name" />
+    </resultMap>
+	<select id="selectLineJoinInfo" resultMap="LineJoinResult">
+		select line_cd_1,
+		line_name_1,
+		line_cd_2,
+		line_name_2,
+		station_g_cd,
+		station_name
+		from lineJoin
+	</select>
+
+</mapper>
