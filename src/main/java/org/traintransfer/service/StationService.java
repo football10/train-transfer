@@ -229,4 +229,140 @@ public class StationService {
 		return json;
 
 	}
+
+	//登录收藏站点API
+		public String regCollectionStation(String jsonRequest) {
+
+			String result = null;
+			Gson gson = new Gson();
+			log.info("regCollectionStationRequest = " + jsonRequest);
+
+			CommonResponse response = new CommonResponse();
+
+			try {
+				selectHistoryRequest request = gson.fromJson(jsonRequest, selectHistoryRequest.class);
+				String openID = request.requestInfo.openid;
+				String stationGroupCode = request.requestInfo.stationGroupCode;
+				String stationNameCN = request.requestInfo.stationNameCN;
+				String stationNameJP = request.requestInfo.stationNameJP;
+				String stationNameRoman = request.requestInfo.stationNameRoman;
+
+				stationHistoryParameter parm = new stationHistoryParameter();
+				parm.setOpen_id(openID);
+				parm.setStation_g_cd(stationGroupCode);
+				parm.setStation_name_cn(stationNameCN);
+				parm.setStation_name_jp(stationNameJP);
+				parm.setStation_name_roma(stationNameRoman);
+
+				result = staionInfoDao.selectUserID_CollectionStation(parm);
+
+				if (result == null) {
+					staionInfoDao.regCollectionStation(parm);
+				}
+
+				response.responseCode = Constants.RESPONSE_CODE_OK;
+				response.errorInfo = null;
+
+			} catch(Exception e) {
+				response.responseCode = Constants.RESPONSE_CODE_NG;
+				response.errorInfo.message = e.getMessage();
+				e.printStackTrace();
+
+				log.error(e.getMessage(), e);
+			}
+
+			String json = gson.toJson(response);
+			log.info("regCollectionStationResponse = " + json);
+
+			return json;
+
+		}
+		//取得收藏站点API
+		public String getCollectionStation(String jsonRequest) {
+
+			Gson gson = new Gson();
+			log.info("getCollectionStationRequest = " + jsonRequest);
+
+			StationNameListResponse response = new StationNameListResponse();
+
+			try {
+				selectStationHistoryRequest request = gson.fromJson(jsonRequest, selectStationHistoryRequest.class);
+				String openID = request.requestInfo.openid;
+
+				List<StationNameInfoEntity> stationHistory = staionInfoDao.selectCollectionStation(openID);
+				List<StationInfo> stationInfoList = new ArrayList<StationInfo>();
+				for (StationNameInfoEntity stationNameInfo : stationHistory) {
+					StationInfo info = new StationInfo();
+					info.stationGroupCode = stationNameInfo.getStation_g_cd();
+					info.stationNameCN = stationNameInfo.getStation_name_cn();
+					info.stationNameJP = stationNameInfo.getStation_name();
+					info.stationNameRoman = stationNameInfo.getStation_name_r();
+
+					stationInfoList.add(info);
+				}
+				response.result.stationCount = stationInfoList.size();
+				response.result.stationList = stationInfoList;
+
+			response.responseCode = Constants.RESPONSE_CODE_OK;
+
+		} catch(Exception e) {
+			response.result = null;
+			response.responseCode = Constants.RESPONSE_CODE_NG;
+			response.errorInfo.message = e.getMessage();
+			e.printStackTrace();
+
+			log.error(e.getMessage(), e);
+		}
+
+		String json = gson.toJson(response);
+		log.info("getCollectionStationResponse = " + json);
+
+		return json;
+
+		}
+
+		//删除最近查询
+		public String delCollectionStation(String jsonRequest) {
+
+			String result = null;
+			Gson gson = new Gson();
+			log.info("deltSelectHistoryRequest = " + jsonRequest);
+
+			CommonResponse response = new CommonResponse();
+
+			try {
+				selectHistoryRequest request = gson.fromJson(jsonRequest, selectHistoryRequest.class);
+				String openID = request.requestInfo.openid;
+				String stationGroupCode = request.requestInfo.stationGroupCode;
+
+				stationHistoryParameter parm = new stationHistoryParameter();
+				parm.setOpen_id(openID);
+				parm.setStation_g_cd(stationGroupCode);
+				parm.setStation_name_cn("");
+				parm.setStation_name_jp("");
+				parm.setStation_name_roma("");
+
+				result = staionInfoDao.selectUserID_CollectionStation(parm);
+
+				if (result != null) {
+					staionInfoDao.deleteCollectionStation(parm);
+				}
+
+				response.responseCode = Constants.RESPONSE_CODE_OK;
+				response.errorInfo = null;
+
+			} catch(Exception e) {
+				response.responseCode = Constants.RESPONSE_CODE_NG;
+				response.errorInfo.message = e.getMessage();
+				e.printStackTrace();
+
+				log.error(e.getMessage(), e);
+			}
+
+			String json = gson.toJson(response);
+			log.info("deltSelectHistoryResponse = " + json);
+
+			return json;
+
+		}
 }

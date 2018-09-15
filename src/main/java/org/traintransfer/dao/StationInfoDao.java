@@ -14,6 +14,8 @@ public interface StationInfoDao {
 
 	List<StationNameInfoEntity> selectStationNameList(StationNameLikeParameter stationNameLikeParameter);
 
+
+	//最近查询
 	void regSelectHistory(stationHistoryParameter shParameter);
 
 	void updateSelectHistory(stationHistoryParameter shParameter);
@@ -24,5 +26,13 @@ public interface StationInfoDao {
 
 	void deleteSelectHistory(stationHistoryParameter shParameter);
 
+	//收藏点点
+	void regCollectionStation(stationHistoryParameter shParameter);
+
+	String selectUserID_CollectionStation(stationHistoryParameter shParameter);
+
+	List<StationNameInfoEntity> selectCollectionStation(String openId);
+
+	void deleteCollectionStation(stationHistoryParameter shParameter);
 
 }

@@ -52,6 +52,8 @@
 		limit 10
 
 	</select>
+
+	<!--最近查询  -->
 	<select id="selectUserID_SelectHistory" resultType="String" parameterType="org.traintransfer.dao.parameter.stationHistoryParameter">
 		select
 			userID
@@ -102,4 +104,47 @@
         limit 10
 	</select>
 
+    <!--收藏站点  -->
+	<select id="selectUserID_CollectionStation" resultType="String" parameterType="org.traintransfer.dao.parameter.stationHistoryParameter">
+		select
+			userID
+		from collectionStation
+	    where userID = #{open_id}
+	    and station_g_cd = #{station_g_cd}
+	</select>
+	<insert id="regCollectionStation" parameterType="org.traintransfer.dao.parameter.stationHistoryParameter">
+		insert into collectionStation
+			(userID
+			,station_g_cd
+			,station_name
+			,station_name_r
+			,station_name_cn
+			,selectDate)
+		values (
+			#{open_id},
+			#{station_g_cd},
+			#{station_name_jp},
+			#{station_name_roma},
+			#{station_name_cn},
+			now())
+	</insert>
+
+	<delete id="deleteCollectionStation" parameterType="org.traintransfer.dao.parameter.stationHistoryParameter">
+		delete
+		from collectionStation
+	    where userID = #{open_id}
+	    and station_g_cd = #{station_g_cd}
+	</delete>
+
+	<select id="selectCollectionStation" resultMap="StationNameResult" parameterType="String">
+		select
+			station_g_cd,
+			station_name_cn,
+			station_name,
+			station_name_r
+		from collectionStation
+		where userID = #{open_id}
+        order by selectDate
+        limit 10
+	</select>
 </mapper>

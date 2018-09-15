@@ -37,4 +37,22 @@ public class DataController {
 	public String delSelectHistory(@RequestBody String jsonRequest){
 		return stationService.deltSelectHistory(jsonRequest);
 	}
+
+	// 登录收藏站点API
+	@RequestMapping(value = "/data/regCollectionStation", method = POST, produces = "application/json;charset=UTF-8")
+	public String regCollectionStation(@RequestBody String jsonRequest){
+		return stationService.regCollectionStation(jsonRequest);
+	}
+
+	// 取得收藏站点API
+	@RequestMapping(value = "/data/getCollectionStation", method = POST, produces = "application/json;charset=UTF-8")
+	public String getCollectionStation(@RequestBody String jsonRequest){
+		return stationService.getCollectionStation(jsonRequest);
+	}
+
+	// 删除收藏站点API
+	@RequestMapping(value = "/data/delCollectionStation", method = POST, produces = "application/json;charset=UTF-8")
+	public String delCollectionStation(@RequestBody String jsonRequest){
+		return stationService.delCollectionStation(jsonRequest);
+	}
 }
