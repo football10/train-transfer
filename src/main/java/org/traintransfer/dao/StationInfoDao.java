@@ -18,9 +18,9 @@ public interface StationInfoDao {
 
 	void updateSelectHistory(stationHistoryParameter shParameter);
 
-	String selectSelectHistory(stationHistoryParameter shParameter);
+	String selectUserID_SelectHistory(stationHistoryParameter shParameter);
 
-	List<String> selectHistory(String openId);
+	List<StationNameInfoEntity> selectHistory(String openId);
 
 
 }

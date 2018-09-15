@@ -104,12 +104,18 @@ public class StationService {
 			selectHistoryRequest request = gson.fromJson(jsonRequest, selectHistoryRequest.class);
 			String openID = request.requestInfo.openid;
 			String stationGroupCode = request.requestInfo.stationGroupCode;
+			String stationNameCN = request.requestInfo.stationNameCN;
+			String stationNameJP = request.requestInfo.stationNameJP;
+			String stationNameRoman = request.requestInfo.stationNameRoman;
 
 			stationHistoryParameter parm = new stationHistoryParameter();
 			parm.setOpen_id(openID);
 			parm.setStation_g_cd(stationGroupCode);
+			parm.setStation_name_cn(stationNameCN);
+			parm.setStation_name_jp(stationNameJP);
+			parm.setStation_name_roma(stationNameRoman);
 
-			result = staionInfoDao.selectSelectHistory(parm);
+			result = staionInfoDao.selectUserID_SelectHistory(parm);
 
 			if (result == null) {
 				staionInfoDao.regSelectHistory(parm);
@@ -137,7 +143,6 @@ public class StationService {
 
 	public String getSelectHistory(String jsonRequest) {
 
-
 		Gson gson = new Gson();
 		log.info("getSelectHistoryRequest = " + jsonRequest);
 
@@ -147,30 +152,35 @@ public class StationService {
 			selectStationHistoryRequest request = gson.fromJson(jsonRequest, selectStationHistoryRequest.class);
 			String openID = request.requestInfo.openid;
 
-			List<String> stationHistory = staionInfoDao.selectHistory(openID);
+			List<StationNameInfoEntity> stationHistory = staionInfoDao.selectHistory(openID);
+			List<StationInfo> stationInfoList = new ArrayList<StationInfo>();
+			for (StationNameInfoEntity stationNameInfo : stationHistory) {
+				StationInfo info = new StationInfo();
+				info.stationGroupCode = stationNameInfo.getStation_g_cd();
+				info.stationNameCN = stationNameInfo.getStation_name_cn();
+				info.stationNameJP = stationNameInfo.getStation_name();
+				info.stationNameRoman = stationNameInfo.getStation_name_r();
 
-//			stationHistoryParameter parm = new stationHistoryParameter();
-//			parm.setOpen_id(openID);
-//			parm.setStation_g_cd(stationGroupCode);
+				stationInfoList.add(info);
+			}
+			response.result.stationCount = stationInfoList.size();
+			response.result.stationList = stationInfoList;
 
+		response.responseCode = Constants.RESPONSE_CODE_OK;
 
+	} catch(Exception e) {
+		response.result = null;
+		response.responseCode = Constants.RESPONSE_CODE_NG;
+		response.errorInfo.message = e.getMessage();
+		e.printStackTrace();
 
-			response.responseCode = Constants.RESPONSE_CODE_OK;
-			response.errorInfo = null;
+		log.error(e.getMessage(), e);
+	}
 
-		} catch(Exception e) {
-			response.responseCode = Constants.RESPONSE_CODE_NG;
-			response.errorInfo.message = e.getMessage();
-			e.printStackTrace();
+	String json = gson.toJson(response);
+	log.info("GetStationNameListResponse = " + json);
 
-			log.error(e.getMessage(), e);
-		}
-
-
-		String json = gson.toJson(response);
-		log.info("etSelectHistoryResponse = " + json);
-
-		return json;
+	return json;
 
 	}
 }

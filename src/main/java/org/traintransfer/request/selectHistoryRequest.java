@@ -10,5 +10,11 @@ public class selectHistoryRequest {
 
 		//stationGroupCode
 		public String stationGroupCode;
+
+		public String stationNameCN;
+		public String stationNameJP;
+		public String stationNameRoman;
+
+
 	}
 }

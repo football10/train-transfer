@@ -52,27 +52,27 @@
 		limit 10
 
 	</select>
-	<select id="selectHistory" resultType="String" parameterType="String">
-		select
-			stationGCd
-		from stationHistory
-	    where userID = #{open_id}
-	</select>
-	<select id="selectSelectHistory" resultType="String" parameterType="org.traintransfer.dao.parameter.stationHistoryParameter">
+	<select id="selectUserID_SelectHistory" resultType="String" parameterType="org.traintransfer.dao.parameter.stationHistoryParameter">
 		select
 			userID
 		from stationHistory
 	    where userID = #{open_id}
-	    and stationGCd = #{station_g_cd}
+	    and station_g_cd = #{station_g_cd}
 	</select>
 	<insert id="regSelectHistory" parameterType="org.traintransfer.dao.parameter.stationHistoryParameter">
 		insert into stationHistory
 			(userID
-			,stationGCd
+			,station_g_cd
+			,station_name
+			,station_name_r
+			,station_name_cn
 			,selectDate)
 		values (
 			#{open_id},
 			#{station_g_cd},
+			#{station_name_jp},
+			#{station_name_roma},
+			#{station_name_cn},
 			now())
 	</insert>
 
@@ -80,14 +80,26 @@
 		update stationHistory set
 			selectDate = now()
 	    where userID = #{open_id}
-	    and stationGCd = #{station_g_cd}
+	    and station_g_cd = #{station_g_cd}
 	</update>
 
 	<delete id="deleteSelectHistory" parameterType="org.traintransfer.dao.parameter.stationHistoryParameter">
 		delete
 		from stationHistory
 	    where userID = #{open_id}
-	    and stationGCd = #{station_g_cd}
+	    and station_g_cd = #{station_g_cd}
 	</delete>
+
+	<select id="selectHistory" resultMap="StationNameResult" parameterType="String">
+		select
+			station_g_cd,
+			station_name_cn,
+			station_name,
+			station_name_r
+		from stationHistory
+		where userID = #{open_id}
+        order by selectDate
+        limit 10
+	</select>
 
 </mapper>
