@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.traintransfer.dao.CoreDao">
+	<resultMap id="LineJoinResult" type="org.traintransfer.dao.entity.LineJoinInfoEntity">
+        <result column="line_cd_1" property="line_cd_1" />
+        <result column="line_name_1" property="line_name_1" />
+        <result column="line_cd_2" property="line_cd_2" />
+        <result column="line_name_2" property="line_name_2" />
+        <result column="station_g_cd" property="station_g_cd" />
+        <result column="station_name" property="station_name" />
+    </resultMap>
+	<select id="callTrainSearch" resultMap="LineJoinResult" statementType="CALLABLE">
+		{call train_search(#{fromStationGCode,jdbcType=INTEGER,mode=IN}, #{toStationGCode,jdbcType=INTEGER,mode=IN}}
+	</select>
+
+</mapper>
