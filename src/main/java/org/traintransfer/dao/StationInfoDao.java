@@ -22,5 +22,7 @@ public interface StationInfoDao {
 
 	List<StationNameInfoEntity> selectHistory(String openId);
 
+	void deleteSelectHistory(stationHistoryParameter shParameter);
+
 
 }

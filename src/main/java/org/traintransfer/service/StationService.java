@@ -141,6 +141,7 @@ public class StationService {
 
 	}
 
+	//取得最近查询API
 	public String getSelectHistory(String jsonRequest) {
 
 		Gson gson = new Gson();
@@ -181,6 +182,51 @@ public class StationService {
 	log.info("GetStationNameListResponse = " + json);
 
 	return json;
+
+	}
+
+	//删除最近查询
+	public String deltSelectHistory(String jsonRequest) {
+
+		String result = null;
+		Gson gson = new Gson();
+		log.info("deltSelectHistoryRequest = " + jsonRequest);
+
+		CommonResponse response = new CommonResponse();
+
+		try {
+			selectHistoryRequest request = gson.fromJson(jsonRequest, selectHistoryRequest.class);
+			String openID = request.requestInfo.openid;
+			String stationGroupCode = request.requestInfo.stationGroupCode;
+
+			stationHistoryParameter parm = new stationHistoryParameter();
+			parm.setOpen_id(openID);
+			parm.setStation_g_cd(stationGroupCode);
+			parm.setStation_name_cn("");
+			parm.setStation_name_jp("");
+			parm.setStation_name_roma("");
+
+			result = staionInfoDao.selectUserID_SelectHistory(parm);
+
+			if (result != null) {
+				staionInfoDao.deleteSelectHistory(parm);
+			}
+
+			response.responseCode = Constants.RESPONSE_CODE_OK;
+			response.errorInfo = null;
+
+		} catch(Exception e) {
+			response.responseCode = Constants.RESPONSE_CODE_NG;
+			response.errorInfo.message = e.getMessage();
+			e.printStackTrace();
+
+			log.error(e.getMessage(), e);
+		}
+
+		String json = gson.toJson(response);
+		log.info("deltSelectHistoryResponse = " + json);
+
+		return json;
 
 	}
 }

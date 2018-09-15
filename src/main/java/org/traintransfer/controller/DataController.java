@@ -32,4 +32,9 @@ public class DataController {
 		return stationService.getSelectHistory(jsonRequest);
 	}
 
+	// 删除最近查询API
+	@RequestMapping(value = "/data/delSelectHistory", method = POST, produces = "application/json;charset=UTF-8")
+	public String delSelectHistory(@RequestBody String jsonRequest){
+		return stationService.deltSelectHistory(jsonRequest);
+	}
 }
