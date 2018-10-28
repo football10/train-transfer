@@ -23,7 +23,10 @@ import org.traintransfer.response.CommonResponse;
 import org.traintransfer.response.StationNameListResponse;
 import org.traintransfer.response.model.StationInfo;
 
+import com.atilika.kuromoji.ipadic.Token;
+import com.atilika.kuromoji.ipadic.Tokenizer;
 import com.google.gson.Gson;
+import com.ibm.icu.text.Transliterator;
 
 @Service
 @Transactional
@@ -67,6 +70,22 @@ public class StationService {
 					info.stationNameCN = stationNameInfo.getStation_name_cn();
 					info.stationNameJP = stationNameInfo.getStation_name();
 					info.stationNameRoman = stationNameInfo.getStation_name_r();
+
+					// TODO 中文翻译前的暂时对应
+					if(StringUtils.isEmpty(info.stationNameCN)) {
+						info.stationNameCN = info.stationNameJP;
+					}
+
+					if(StringUtils.isEmpty(info.stationNameRoman)) {
+						Tokenizer tokenizer = new Tokenizer();
+						List<Token> tokens = tokenizer.tokenize(info.stationNameJP);
+						StringBuffer roman = new StringBuffer();
+						for (Token token : tokens) {
+							roman.append(token.getReading());
+				        }
+						Transliterator kana2latin = Transliterator.getInstance("Katakana-Latin");
+						info.stationNameRoman = kana2latin.transliterate(roman.toString());
+					}
 
 					stationInfoList.add(info);
 				}
