@@ -396,8 +396,8 @@ public class StationService {
 
 			try {
 				selectNearbayStationRequest request = gson.fromJson(jsonRequest, selectNearbayStationRequest.class);
-				String lon = request.requestInfo.lon;
-				String lat = request.requestInfo.lat;
+				String lon = request.requestInfo.longitude;
+				String lat = request.requestInfo.latitude;
 				NearbyStationParameter latlng = new NearbyStationParameter();
 				latlng.setLat(lat);
 				latlng.setLon(lon);
@@ -410,6 +410,9 @@ public class StationService {
 					info.stationNameCN = stationNameInfo.getStation_name_cn();
 					info.stationNameJP = stationNameInfo.getStation_name();
 					info.stationNameRoman = stationNameInfo.getStation_name_r();
+					info.stationLon = stationNameInfo.getLon();
+					info.stationLat = stationNameInfo.getLat();
+					info.distance = stationNameInfo.getDistance();
 
 					stationInfoList.add(info);
 				}

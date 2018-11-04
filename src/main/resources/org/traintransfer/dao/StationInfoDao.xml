@@ -155,15 +155,17 @@
 			station_name_cn,
 			station_name,
 			station_name_r,
-			GLENGTH(GEOMFROMTEXT(CONCAT(
+			lon,
+			lat,
+			floor((GLENGTH(GEOMFROMTEXT(CONCAT(
              'LineString(',
              #{lon},' ',#{lat}, ",",
              X( latlng ),' ',Y( latlng ),
              ')'
-            ))) AS distance
+            ))))*100000) AS distance
 		from
 		    station
-        GROUP BY station_g_cd HAVING distance <= 0.01
+        GROUP BY station_g_cd HAVING distance <= 1000
         ORDER BY distance
         ]]>
 	</select>

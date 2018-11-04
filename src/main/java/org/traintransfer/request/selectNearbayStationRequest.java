@@ -6,8 +6,8 @@ public class selectNearbayStationRequest {
 
 	public class RequestInfo {
 		// lon
-		public String lon;
+		public String longitude;
 		// lat
-		public String lat;
+		public String latitude;
 	}
 }

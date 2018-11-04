@@ -11,6 +11,30 @@ public class StationNameInfoEntity {
 	// Station的名称(日语的发音)
 	public String station_name_r;
 
+	//经纬度
+	public String lon;
+	public String lat;
+	//附近站点的距离（单位：米）
+	public String distance;
+
+	public String getDistance() {
+		return distance;
+	}
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
+	public String getLon() {
+		return lon;
+	}
+	public void setLon(String lon) {
+		this.lon = lon;
+	}
+	public String getLat() {
+		return lat;
+	}
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
 	public int getStation_g_cd() {
 		return station_g_cd;
 	}
