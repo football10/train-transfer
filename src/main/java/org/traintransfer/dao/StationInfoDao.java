@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 import org.traintransfer.dao.entity.StationNameInfoEntity;
+import org.traintransfer.dao.parameter.NearbyStationParameter;
 import org.traintransfer.dao.parameter.StationNameLikeParameter;
 import org.traintransfer.dao.parameter.stationHistoryParameter;
 
@@ -34,5 +35,8 @@ public interface StationInfoDao {
 	List<StationNameInfoEntity> selectCollectionStation(String openId);
 
 	void deleteCollectionStation(stationHistoryParameter shParameter);
+
+	//附近站点
+	List<StationNameInfoEntity> selectNearbyStation(NearbyStationParameter latlng);
 
 }

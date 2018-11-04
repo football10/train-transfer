@@ -55,4 +55,10 @@ public class DataController {
 	public String delCollectionStation(@RequestBody String jsonRequest){
 		return stationService.delCollectionStation(jsonRequest);
 	}
+
+	// 取得附近站点API
+	@RequestMapping(value = "/data/getNearbyStation", method = POST, produces = "application/json;charset=UTF-8")
+	public String getNearbyStation(@RequestBody String jsonRequest){
+		return stationService.getNearbyStation(jsonRequest);
+	}
 }

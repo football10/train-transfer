@@ -100,7 +100,7 @@
 			station_name_r
 		from stationHistory
 		where userID = #{open_id}
-        order by selectDate
+        order by selectDate desc
         limit 10
 	</select>
 
@@ -144,7 +144,27 @@
 			station_name_r
 		from collectionStation
 		where userID = #{open_id}
-        order by selectDate
+        order by selectDate desc
         limit 10
+	</select>
+	<!--附近站点  -->
+	<select id="selectNearbyStation" resultMap="StationNameResult" parameterType="org.traintransfer.dao.parameter.NearbyStationParameter">
+	   <![CDATA[
+       select
+			station_g_cd,
+			station_name_cn,
+			station_name,
+			station_name_r,
+			GLENGTH(GEOMFROMTEXT(CONCAT(
+             'LineString(',
+             #{lon},' ',#{lat}, ",",
+             X( latlng ),' ',Y( latlng ),
+             ')'
+            ))) AS distance
+		from
+		    station
+        GROUP BY station_g_cd HAVING distance <= 0.01
+        ORDER BY distance
+        ]]>
 	</select>
 </mapper>

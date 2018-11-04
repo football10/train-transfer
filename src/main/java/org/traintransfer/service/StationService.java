@@ -14,10 +14,12 @@ import org.traintransfer.common.Constants;
 import org.traintransfer.common.Util;
 import org.traintransfer.dao.StationInfoDao;
 import org.traintransfer.dao.entity.StationNameInfoEntity;
+import org.traintransfer.dao.parameter.NearbyStationParameter;
 import org.traintransfer.dao.parameter.StationNameLikeParameter;
 import org.traintransfer.dao.parameter.stationHistoryParameter;
 import org.traintransfer.request.GetStationNameListRequest;
 import org.traintransfer.request.selectHistoryRequest;
+import org.traintransfer.request.selectNearbayStationRequest;
 import org.traintransfer.request.selectStationHistoryRequest;
 import org.traintransfer.response.CommonResponse;
 import org.traintransfer.response.StationNameListResponse;
@@ -383,5 +385,51 @@ public class StationService {
 
 			return json;
 
+		}
+
+		//取得附近站点
+		public String getNearbyStation(String jsonRequest) {
+			Gson gson = new Gson();
+			log.info("getNearbyStationRequest = " + jsonRequest);
+
+			StationNameListResponse response = new StationNameListResponse();
+
+			try {
+				selectNearbayStationRequest request = gson.fromJson(jsonRequest, selectNearbayStationRequest.class);
+				String lon = request.requestInfo.lon;
+				String lat = request.requestInfo.lat;
+				NearbyStationParameter latlng = new NearbyStationParameter();
+				latlng.setLat(lat);
+				latlng.setLon(lon);
+
+				List<StationNameInfoEntity> stationHistory = staionInfoDao.selectNearbyStation(latlng);
+				List<StationInfo> stationInfoList = new ArrayList<StationInfo>();
+				for (StationNameInfoEntity stationNameInfo : stationHistory) {
+					StationInfo info = new StationInfo();
+					info.stationGroupCode = stationNameInfo.getStation_g_cd();
+					info.stationNameCN = stationNameInfo.getStation_name_cn();
+					info.stationNameJP = stationNameInfo.getStation_name();
+					info.stationNameRoman = stationNameInfo.getStation_name_r();
+
+					stationInfoList.add(info);
+				}
+				response.result.stationCount = stationInfoList.size();
+				response.result.stationList = stationInfoList;
+
+			response.responseCode = Constants.RESPONSE_CODE_OK;
+
+		} catch(Exception e) {
+			response.result = null;
+			response.responseCode = Constants.RESPONSE_CODE_NG;
+			response.errorInfo.message = e.getMessage();
+			e.printStackTrace();
+
+			log.error(e.getMessage(), e);
+		}
+
+		String json = gson.toJson(response);
+		log.info("getNearbyStationRequest = " + json);
+
+		return json;
 		}
 }
